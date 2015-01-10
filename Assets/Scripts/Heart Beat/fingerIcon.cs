@@ -3,8 +3,23 @@ using System.Collections;
 using UnityEngine.UI;
 
 public class fingerIcon : MonoBehaviour {
+
+
+	private Vector3 startPos;
+
 	public float alphaChannel;
 	bool touched;
+
+
+
+	public void setTrailRenderer()
+	{
+		TrailRenderer tr = this.GetComponent<TrailRenderer>();
+		tr.sortingLayerName = "Foreground";
+	}
+
+	
+	// Update is called once per frame
 
 	void Update () 
 	{
@@ -18,6 +33,7 @@ public class fingerIcon : MonoBehaviour {
 			if(touch.phase == TouchPhase.Began)
 			{
 				alphaChannel = 0.5f;
+
 			}
 			
 			if(touch.phase !=TouchPhase.Ended)
@@ -25,6 +41,16 @@ public class fingerIcon : MonoBehaviour {
 				Vector3 startPos;
 				startPos = Camera.main.ScreenToWorldPoint(touch.position);
 				transform.position = new Vector2(startPos.x,startPos.y);
+
+				startPos = touch.position;
+
+				transform.position = new Vector2(startPos.x, startPos.y);
+
+				Debug.Log(touch.position);
+				transform.position = new Vector3(startPos.x, startPos.y, startPos.z);
+			
+
+
 			}
 		}
 	}
