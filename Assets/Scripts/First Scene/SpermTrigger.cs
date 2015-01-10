@@ -3,18 +3,21 @@ using System.Collections;
 
 public class SpermTrigger : MonoBehaviour 
 {
-	public GameObject ScreenOverlay;
-	bool on = true;
-	
 	void Update ()
 	{
-		if(gameObject.transform.position.y>=-3.24f)
+		if(gameObject.name == "Sperm")
 		{
-			if(on ==true)
+			if(gameObject.transform.position.y>=-3.24f)
 			{
-				ScreenOverlay.gameObject.SetActive(true);
-				on = false;
+				GetComponent<animTrigger>().Trigger();
 			}
 		}
 	}
+	
+	void Scene()
+	{
+		Application.LoadLevel("SwipeGame");
+	}
+	
+	
 }

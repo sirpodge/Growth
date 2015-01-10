@@ -11,7 +11,7 @@ public class ScreenFlash : MonoBehaviour
 	IEnumerator wait(float time)//Timer for blackout
 	{
 		yield return new WaitForSeconds(time);
-//		Application.LoadLevel("GameStage1");
+		Application.LoadLevel("SwipeGame");
 	}
 	
 	void OnGUI()

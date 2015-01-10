@@ -5,122 +5,143 @@ using System.Collections;
 public class Swipe : MonoBehaviour 
 {
 	private Vector2 startPos = Vector2.zero;
-	public Image egg_1, egg_2, advance, finger;
+	public Image egg_1, egg_2, finger;
 	Touch touch;
 	public bool stage1;
 	public bool stage2;
-	bool begin;
+	public bool begin;
 	float alphaChannel;
-	float timer = 2.5f;
+	float timer = 7f;
+	public GameObject advance;
+	Vector2 updatedPos = Vector2.zero;
 
-
-	public Animator anim;
-
-	void Start()
-	{
-
-		if(gameObject.name == "Egg_3")
-		{
-			anim = GetComponent<Animator>();
-		}
-
-	}
-
-
-
+	
 
 	void Update()
 	{
-		if (!begin) {
-						timer -= Time.deltaTime;
-						if (timer <= 0) {
-								begin = true;
+		if (!begin) 
+		{
+			timer -= Time.deltaTime;
+			if (timer <= 0) 
+			{
+				begin = true;
 				if(finger)
 				{
 					finger.gameObject.SetActive(false);
 				}
 
+			}
+		}
+
+		if (begin) 
+		{
+			if (stage1) 
+			{
+				if (gameObject.name == "Egg_1") 
+				{
+						if (!stage2) 
+						{
+								egg_1.color = new Color (egg_1.color.r, egg_1.color.g, egg_1.color.b, Mathf.Clamp01 (egg_1.color.a) + 1f * 1f * Time.deltaTime);
+								GetComponent<Image> ().color = new Color (GetComponent<Image> ().color.r, GetComponent<Image> ().color.g, GetComponent<Image> ().color.b, Mathf.Clamp01 (GetComponent<Image> ().color.a) - 1f * 1f * Time.deltaTime);
 						}
 				}
-
-		if (begin) {
-				if (stage1) {
-						if (gameObject.name == "Egg_1") {
-								if (!stage2) {
-										egg_1.color = new Color (egg_1.color.r, egg_1.color.g, egg_1.color.b, Mathf.Clamp01 (egg_1.color.a) + 1f * 0.5f * Time.deltaTime);
-										GetComponent<Image> ().color = new Color (GetComponent<Image> ().color.r, GetComponent<Image> ().color.g, GetComponent<Image> ().color.b, Mathf.Clamp01 (GetComponent<Image> ().color.a) - 1f * 0.5f * Time.deltaTime);
-								}
-						}
-
-
-
-				}
+			}
 
 			if (stage2) 
 			{
+			
+				if (gameObject.name == "Egg_1") 
+				{
+					GetComponent<Image> ().color = new Color (GetComponent<Image> ().color.r, GetComponent<Image> ().color.g, GetComponent<Image> ().color.b, 0f);
+				}
+				
 				if (gameObject.name == "Egg_2") 
 				{
-					Debug.Log ("hh");
-
 					GetComponent<Image> ().color = new Color (GetComponent<Image> ().color.r, GetComponent<Image> ().color.g, GetComponent<Image> ().color.b, Mathf.Clamp01 (GetComponent<Image> ().color.a) - 1f * 0.5f * Time.deltaTime);
-					egg_2.color = new Color (egg_2.color.r, egg_2.color.g, egg_2.color.b, Mathf.Clamp01 (egg_2.color.a) + 1f * 0.5f * Time.deltaTime);
-					advance.color = new Color (advance.color.r, advance.color.g, advance.color.b, Mathf.Clamp01 (advance.color.a) + 1f * 0.5f * Time.deltaTime);
+					egg_2.color = new Color (egg_2.color.r, egg_2.color.g, egg_2.color.b, Mathf.Clamp01 (egg_2.color.a) + 1f * 1f * Time.deltaTime);
 				}
 
 				if(gameObject.name == "Egg_3")
 				{
-					if(Mathf.Clamp01(GameObject.Find("Egg_2").GetComponent<Image>().color.a) == 0)
+				
+					if(Mathf.Clamp01(GetComponent<Image>().color.a) == 1)
 					{
-						Debug.Log("hi");
-						anim.SetBool("go", true);
+						if(Mathf.Clamp01( egg_1.color.a) !=0)
+						{
+							egg_1.color = new Color (egg_1.color.r, egg_1.color.g, egg_1.color.b, 0f);
+							
+						}
+						Animator a = GetComponent<Animator>();
+						a.enabled = true;
+						GetComponent<animTrigger>().Trigger();
+						advance.SetActive(true);
 					}
 				}
 			}
 
-				if (Input.touchCount > 0) { //If there's a finger on the screen
-						touch = Input.touches [0];//Only count 1
+			if (Input.touchCount > 0) 
+			{ 
+				touch = Input.touches [0];
+				
 
 
+				switch (touch.phase) 
+				{
+				case TouchPhase.Began:
+						startPos = Camera.main.ScreenToWorldPoint(touch.position);
 
-						switch (touch.phase) {//Touch function switch
-						case TouchPhase.Began://First touch, stores where it begins
-								startPos = touch.position;
+						break;
 
-								break;//jumps to next phase
-
-						case TouchPhase.Ended://When I take my finger up
-								Debug.DrawLine (startPos, touch.position, Color.white, 3f);
-								Debug.Log (startPos);
-								Debug.Log (touch.position);
-								if (!stage1) {
-										if (startPos.x > 130f && startPos.x < 220f) {
-												if (touch.position.x > 30f && touch.position.x < 150f) {
-														if (startPos.y < 340f && startPos.y > 260f) {
-																if (touch.position.y < 160f && touch.position.y > 65f) {
-
-																		stage1 = true;
-
-
-																}
-														}
-												}
+				case TouchPhase.Moved:
+					updatedPos = Camera.main.ScreenToWorldPoint(touch.position);
+					break;
+				case TouchPhase.Ended:
+						Debug.DrawLine (startPos, updatedPos, Color.white, 3f);
+						Debug.Log (startPos);
+						Debug.Log (updatedPos);
+						if (!stage1) 
+						{
+							if (startPos.x > 0.4f && startPos.x < 4.7f)
+							{
+								Debug.Log("g");
+								if (updatedPos.x > -6f && updatedPos.x < -0.1f) 
+								{
+								Debug.Log("f");
+									if (startPos.y < 8f && startPos.y > 3f) 
+									{
+									Debug.Log("v");
+										if (updatedPos.y < -3.6f && updatedPos.y > -8.6f) 
+										{		
+											
+											stage1 = true;
 										}
-
-								} else {
-										if (startPos.y < 315f && startPos.y > 260f) {
-												if (touch.position.y < 150f && touch.position.y > 65f) {
-														if (startPos.x > 50f && startPos.x < 110f) {
-																if (touch.position.x > 150f && touch.position.x < 210f) {
-																		stage2 = true;
-
-																}
+									}
+								}
+							}
+	
+						} 
+						else 
+						{
+								if (startPos.y < 8f && startPos.y > 3f) 
+								{
+							Debug.Log("h");
+										if (updatedPos.y > -9.6f && updatedPos.y < -2f)
+										{
+								Debug.Log("u");
+												if (startPos.x > -5.4f && startPos.x < -1.2f) 
+												{
+									Debug.Log("w");
+														if (updatedPos.x > 1.2f && updatedPos.x < 5f) 
+														{
+																stage2 = true;
 														}
 												}
 										}
 								}
-								break;
 						}
+						break;
 				}
+			}
 		}
 	}
 }
